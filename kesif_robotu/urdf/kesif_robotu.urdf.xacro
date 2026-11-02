@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot name="kesif_robotu" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ========== ÖLÇÜLER (metre, kilogram) ========== -->
+  <xacro:property name="govde_uzunluk"   value="0.40"/>
+  <xacro:property name="govde_genislik"  value="0.30"/>
+  <xacro:property name="govde_yukseklik" value="0.10"/>
+  <xacro:property name="govde_kutle"     value="2.0"/>
+  <xacro:property name="teker_yaricap"   value="0.07"/>
+
+  <!-- ========== RENKLER ========== -->
+  <material name="turuncu">
+    <color rgba="1.0 0.5 0.0 1.0"/>
+  </material>
+
+  <!-- ========== BASE_FOOTPRINT: yerdeki referans noktası ========== -->
+  <link name="base_footprint"/>
+
+  <!-- Gövdeyi yerden tekerlek yarıçapı kadar yukarı koyuyoruz -->
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${teker_yaricap}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ========== BASE_LINK: gövde ========== -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${govde_uzunluk} ${govde_genislik} ${govde_yukseklik}"/>
+      </geometry>
+      <material name="turuncu"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="${govde_uzunluk} ${govde_genislik} ${govde_yukseklik}"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="${govde_kutle}"/>
+      <!-- Dikdörtgen kutunun eylemsizlik formülü -->
+      <inertia
+        ixx="${govde_kutle/12 * (govde_genislik**2 + govde_yukseklik**2)}"
+        iyy="${govde_kutle/12 * (govde_uzunluk**2 + govde_yukseklik**2)}"
+        izz="${govde_kutle/12 * (govde_uzunluk**2 + govde_genislik**2)}"
+        ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+</robot>
